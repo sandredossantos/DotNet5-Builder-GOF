@@ -1,9 +1,11 @@
-﻿using System.Threading.Tasks;
+﻿using Proxy.Api.Contracts;
+using System;
+using System.Threading.Tasks;
 
 namespace Proxy.Api.Services
 {
     public interface IAppService
     {
-        Task Get();
+        Task<AppResponse> Post(AppRequest request);
     }
 }

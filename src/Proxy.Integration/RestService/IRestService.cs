@@ -5,10 +5,7 @@ using System.Threading.Tasks;
 namespace Proxy.Integration.RestService
 {
     public interface IRestService
-    {        
-        Task<HttpResponseMessage> GetAsync();
-        Task<HttpResponseMessage> PostAsync();
-        Task<HttpResponseMessage> PutAsync();
-        Task<HttpResponseMessage> DeleteAsync();
+    {
+        Task<HttpResponseMessage> ExecuteAsync(RestServiceConfiguration config);
     }
 }

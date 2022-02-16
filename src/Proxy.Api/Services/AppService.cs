@@ -1,4 +1,5 @@
-﻿using Proxy.Integration.Clients.AppOneClient;
+﻿using Newtonsoft.Json;
+using Proxy.Api.Contracts;
 using Proxy.Integration.RestConfiguration;
 using Proxy.Integration.RestService;
 using System;
@@ -9,16 +10,28 @@ namespace Proxy.Api.Services
 {
     public class AppService : IAppService
     {
-        private readonly IAppOneClient _client;
+        private readonly IRestService _restService;
 
-        public AppService(IAppOneClient client)
+        public AppService(IRestService restService)
         {
-            _client = client;
+            _restService = restService;
         }
 
-        public Task Get()
+        public async Task<AppResponse> Post(AppRequest request)
         {
-            throw new NotImplementedException();
+            var payload = JsonConvert.SerializeObject(request);
+
+            var config = new RestServiceConfigurationBuilder()
+                .AddUri(new Uri("https://webhook.site/5dc3d3e5-84dd-4b9d-acf6-072ad98b8cb3"))
+                .AddPayload(payload.ToString())
+                .AddVerb(HttpMethod.Post)
+                .AddTimeOut(TimeSpan.FromSeconds(3))                
+                .Build();
+
+            var response = await _restService.ExecuteAsync(config);
+            var content = await response.Content.ReadAsStringAsync();                       
+
+            return JsonConvert.DeserializeObject<AppResponse>(content);
         }
     }
 }

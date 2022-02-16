@@ -1,8 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Net.Http;
 
 namespace Proxy.Integration.RestConfiguration
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class RestServiceConfigurationBuilder
     {
         private readonly RestServiceConfiguration _config;
@@ -12,17 +16,21 @@ namespace Proxy.Integration.RestConfiguration
             _config = new RestServiceConfiguration();
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public RestServiceConfiguration Build()
         {
             return _config;
         }
 
         /// <summary>
-        /// Is the endpoint of your request.
+        /// 
         /// </summary>
-        /// <param name="timeout"></param>
+        /// <param name="uri"></param>
         /// <returns></returns>
-        public RestServiceConfigurationBuilder Uri(Uri uri)
+        public RestServiceConfigurationBuilder AddUri(Uri uri)
         {
             _config.Uri = uri;
             return this;
@@ -33,43 +41,66 @@ namespace Proxy.Integration.RestConfiguration
         /// </summary>
         /// <param name="timeout"></param>
         /// <returns></returns>
-        public RestServiceConfigurationBuilder TimeOut(TimeSpan timeout)
+        public RestServiceConfigurationBuilder AddTimeOut(TimeSpan timeout)
         {
             _config.TimeOut = timeout;
             return this;
         }
 
         /// <summary>
-        /// Are the headers of your request.
+        /// 
         /// </summary>
         /// <param name="key"></param>
         /// <param name="value"></param>
         /// <returns></returns>
-        public RestServiceConfigurationBuilder Headers(string key, string value)
+        public RestServiceConfigurationBuilder AddHeader(string key, string value)
         {
             _config.Headers.Add(key, value);
             return this;
         }
 
         /// <summary>
-        /// Is the payload that will be sent.
+        /// 
         /// </summary>
-        /// <param name="payload"></param>
+        /// <param name="headers"></param>
         /// <returns></returns>
-        public RestServiceConfigurationBuilder Payload(string payload)
+        public RestServiceConfigurationBuilder AddHeader(IDictionary<string, string> headers)
+        {
+            _config.Headers = headers;
+            return this;
+        }
+
+       /// <summary>
+       /// 
+       /// </summary>
+       /// <param name="payload"></param>
+       /// <returns></returns>
+        public RestServiceConfigurationBuilder AddPayload(string payload)
         {
             _config.Payload = payload;
             return this;
         }
 
         /// <summary>
-        /// Is the verb of the http protocol that will be used.
+        /// 
         /// </summary>
         /// <param name="method"></param>
         /// <returns></returns>
-        public RestServiceConfigurationBuilder Method(HttpMethod method)
+        public RestServiceConfigurationBuilder AddVerb(HttpMethod method)
         {
             _config.Method = method;
+            return this;
+        }
+        
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="key"></param>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public RestServiceConfigurationBuilder AddQueryParameter(string key, string value)
+        {
+            _config.Parameters.Add(key, value);
             return this;
         }
     }

@@ -1,6 +1,10 @@
 ﻿using Proxy.Integration.RestConfiguration;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Net.Http.Json;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -8,27 +12,34 @@ namespace Proxy.Integration.RestService
 {
     public class RestService : IRestService
     {
-        public Task<HttpResponseMessage> DeleteAsync()
+        public async Task<HttpResponseMessage> ExecuteAsync(RestServiceConfiguration config)
         {
-            throw new System.NotImplementedException();
+            var httpclient = CreateHttpClient(config);
+
+            if (config.Method == HttpMethod.Get)
+            {
+                return await httpclient.GetAsync(config.Uri);
+            }
+
+            if (config.Method == HttpMethod.Post)
+            {
+                return await httpclient.PostAsJsonAsync(config.Uri, config.Payload);
+            }
+
+            if (config.Method == HttpMethod.Put)
+            {
+                return await httpclient.PutAsJsonAsync(config.Uri, config.Payload);
+            }
+
+            if (config.Method == HttpMethod.Delete)
+            {
+                return await httpclient.DeleteAsync(config.Uri);
+            }
+
+            throw new System.NotImplementedException("O verbo informado não está habilitado");
         }
 
-        public Task<HttpResponseMessage> GetAsync()
-        {
-            throw new System.NotImplementedException();
-        }
-
-        public Task<HttpResponseMessage> PostAsync()
-        {
-            throw new System.NotImplementedException();
-        }
-
-        public Task<HttpResponseMessage> PutAsync()
-        {
-            throw new System.NotImplementedException();
-        }
-
-        private HttpClient CreateHttpClient(RestServiceConfiguration config)
+        private static HttpClient CreateHttpClient(RestServiceConfiguration config)
         {
             HttpClient httpClient = new();
 
@@ -39,7 +50,7 @@ namespace Proxy.Integration.RestService
                 CharSet = Encoding.UTF8.WebName
             });
 
-            foreach(var header in config.Headers)
+            foreach (var header in config.Headers)
             {
                 httpClient.DefaultRequestHeaders.TryAddWithoutValidation(header.Key, header.Value);
             }
